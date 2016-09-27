@@ -2,7 +2,7 @@
   "name": "tomatotime",
   "version": "1.0.0",
   "description": "A single-page React app.",
-  "main": "index.js",
+  "main": "./source/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run mkdir && npm run build:html && npm run build:css && npm run build:js",
@@ -27,6 +27,7 @@
   "dependencies": {
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
+    "react-redux": "^4.4.5",
     "react-router": "^2.8.1",
     "redux": "^3.6.0"
   },

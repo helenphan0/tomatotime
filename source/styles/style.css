@@ -1,0 +1,29 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	width: 100%;
+}
+
+div {
+	border: 1px solid lightgrey;
+	margin: 15px auto;
+}
+.main {
+	width: 80%;
+
+
+}
+
+h1 {
+	text-align: center;
+}
+
+.score, .poster, .guess {
+	width: 45%;
+}
+
+.poster {
+	height: 50%;
+}
