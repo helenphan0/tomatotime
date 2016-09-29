@@ -23149,11 +23149,11 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	
 	function getRandomInt(min, max) {
 		return Math.floor(Math.random() * (max - min) + min);
 	};
-	
-	// https://image.tmdb.org/t/p/w320/
 	
 	var id;
 	var showMovie;
@@ -23165,8 +23165,8 @@
 		getInitialState: function getInitialState() {
 			return {
 				game: false,
-				ratingInput: '',
-				timeInput: '',
+				ratingInput: false,
+				timeInput: false,
 				posterTitle: '',
 				posterUrl: '',
 				rating: '',
@@ -23177,8 +23177,8 @@
 		getMovie: function getMovie() {
 			var _this = this;
 	
-			console.log('button clicked, getMovie function triggered');
-			this.setState({ game: true, ratingInput: '', timeInput: '' });
+			console.log('getting new movie');
+			this.setState({ game: true, ratingInput: false, timeInput: false });
 			var page = getRandomInt(1, 250);
 			var searchurl = 'https://api.themoviedb.org/3/movie/popular?api_key=342d326aba75ee271f3e2cb0fbfa3584&language=en-US&page=' + page;
 			return (0, _isomorphicFetch2.default)(searchurl).then(function (response) {
@@ -23198,10 +23198,10 @@
 	
 					var rating = showMovie.tomatoRating;
 					rating = rating === 'N/A' ? showMovie.imdbRating : rating;
-					rating = rating === 'N/A' || rating == '' ? getRandomInt(1, 9) + '.' + getRandomInt(1, 10) : rating;
+					rating = rating === 'N/A' || rating === '' ? getRandomInt(1, 9) + '.' + getRandomInt(1, 10) : rating;
 	
 					var time = showMovie.Runtime;
-					time = time === 'N/A' || time == '' ? getRandomInt(1, 160) + ' min' : time;
+					time = time === 'N/A' || time === '' ? getRandomInt(1, 160) + ' min' : time;
 	
 					_this.setState({ rating: rating, time: time });
 					return showMovie;
@@ -23214,6 +23214,10 @@
 			var score = this.state.score;
 			this.setState({ score: score += parseInt(add) });
 		},
+		disable: function disable(type) {
+			console.log('correct type: ' + type);
+			this.setState(_defineProperty({}, type, true));
+		},
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
@@ -23225,7 +23229,7 @@
 				),
 				_react2.default.createElement(_Score2.default, { score: this.state.score }),
 				_react2.default.createElement(_Poster2.default, { getMovie: this.getMovie, url: this.state.posterUrl, title: this.state.posterTitle }),
-				_react2.default.createElement(_Guess2.default, { addScore: this.addScore, rating: this.state.rating, time: this.state.time, ratingInput: this.state.ratingInput, timeInput: this.state.timeInput })
+				_react2.default.createElement(_Guess2.default, { disable: this.disable, addScore: this.addScore, rating: this.state.rating, time: this.state.time, ratingInput: this.state.ratingInput, timeInput: this.state.timeInput })
 			);
 		}
 	});
@@ -28803,7 +28807,7 @@
 				_react2.default.createElement(
 					'button',
 					{ onClick: this.props.getMovie, type: 'button' },
-					'Begin'
+					'Play'
 				)
 			);
 		}
@@ -28839,7 +28843,9 @@
 			console.log('correct rating: ' + this.props.rating);
 			var correctRating = tomato === this.props.rating ? true : false;
 			if (correctRating) {
+				this.refs.rating.value = 'Correct guess! ' + this.props.rating;
 				this.handleScore();
+				this.disableInput('ratingInput');
 			};
 			this.refs.guessForm.reset();
 		},
@@ -28851,11 +28857,17 @@
 			var correctTime = duration === this.props.time ? true : false;
 			if (correctTime) {
 				this.handleScore();
+				this.disableInput('timeInput');
+				this.refs.time.value = 'Correct guess! ' + this.props.time;
 			};
 			this.refs.guessForm.reset();
 		},
 		handleScore: function handleScore() {
 			this.props.addScore(1);
+		},
+		disableInput: function disableInput(type) {
+			console.log(type);
+			this.props.disable(type);
 		},
 		render: function render() {
 			return _react2.default.createElement(
@@ -28872,13 +28884,13 @@
 						' ',
 						this.props.time
 					),
-					_react2.default.createElement('input', { type: 'text', ref: 'rating', disabled: this.props.ratingInput, placeholder: 'Guess 0.0 to 10.0' }),
+					_react2.default.createElement('input', { type: 'text', ref: 'rating', disabled: this.props.ratingInput, placeholder: this.props.ratingInput == true ? 'Correct answer!' : 'Guess 0.0 to 10.0' }),
 					_react2.default.createElement(
 						'button',
 						{ onClick: this.tomatoGuess, type: 'submit' },
 						'Tomatoes'
 					),
-					_react2.default.createElement('input', { type: 'text', ref: 'time', disabled: this.props.timeInput, placeholder: 'How many minutes?' }),
+					_react2.default.createElement('input', { type: 'text', ref: 'time', disabled: this.props.timeInput, placeholder: this.props.timeInput == true ? 'Correct answer!' : 'How many minutes?' }),
 					_react2.default.createElement(
 						'button',
 						{ onClick: this.timeGuess, type: 'submit' },

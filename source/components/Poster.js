@@ -7,7 +7,7 @@ const Poster = React.createClass({
 			<div className="poster">
 				<h2>{this.props.title}</h2>
 				<img src={this.props.url}/>
-				<button onClick={this.props.getMovie} type='button'>Begin</button>
+				<button onClick={this.props.getMovie} type='button'>Play</button>
 			</div>
 		)
 	}

@@ -9,8 +9,6 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
  };
 
-// https://image.tmdb.org/t/p/w320/
-
 var id;
 var showMovie;
 const defaultPoster = './source/img/default_poster.jpg';
@@ -19,8 +17,8 @@ const Main = React.createClass({
 	getInitialState: function () {
 	    return {
 	      game:  false,
-	      ratingInput: '',
-	      timeInput: '',
+	      ratingInput: false,
+	      timeInput: false,
 	      posterTitle: '',
 	      posterUrl: '',
 	      rating: '',
@@ -29,8 +27,8 @@ const Main = React.createClass({
 	    };
   	},
   	getMovie: function() {
-  		console.log('button clicked, getMovie function triggered');
-  		this.setState({game: true, ratingInput: '', timeInput: '' });
+  		console.log('getting new movie');
+  		this.setState({game: true, ratingInput: false, timeInput: false });
 		var page = getRandomInt(1, 250);
 		var searchurl = 'https://api.themoviedb.org/3/movie/popular?api_key=342d326aba75ee271f3e2cb0fbfa3584&language=en-US&page=' + page;
 		return fetch(searchurl)
@@ -51,10 +49,10 @@ const Main = React.createClass({
 
 		      			var rating = showMovie.tomatoRating;
 		      			rating = (rating === 'N/A' ? showMovie.imdbRating : rating);
-		      			rating = (rating === 'N/A' || rating == '' ? getRandomInt(1, 9) + '.' + getRandomInt(1,10) : rating);
+		      			rating = (rating === 'N/A' || rating === '' ? getRandomInt(1, 9) + '.' + getRandomInt(1,10) : rating);
 
 		      			var time = showMovie.Runtime;
-		      			time = (time === 'N/A' || time == '' ? getRandomInt(1, 160) + ' min' : time);
+		      			time = (time === 'N/A' || time === '' ? getRandomInt(1, 160) + ' min' : time);
 
 		      			this.setState({rating: rating, time: time});
 		      			return showMovie;
@@ -68,13 +66,17 @@ const Main = React.createClass({
   		var score = this.state.score;
   		this.setState({ score: score += parseInt(add)});
   	},
+  	disable: function(type) {
+  		console.log('correct type: ' + type);
+  		this.setState({ [type]: true });
+  	},
 	render() {
 		return (
 			<div className='main'>
 				<h1>TomatoTime!</h1>
 				< Score score={this.state.score} />
 				< Poster getMovie={this.getMovie}  url={this.state.posterUrl} title={this.state.posterTitle} />
-				< Guess addScore={this.addScore} rating={this.state.rating} time={this.state.time} ratingInput={this.state.ratingInput} timeInput={this.state.timeInput} />
+				< Guess disable={this.disable} addScore={this.addScore} rating={this.state.rating} time={this.state.time} ratingInput={this.state.ratingInput} timeInput={this.state.timeInput} />
 			</div>
 		)
 	}
