@@ -23122,7 +23122,7 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 	
 	var _react = __webpack_require__(1);
@@ -23149,44 +23149,85 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var movieaurl = 'https://www.omdbapi.com/?t=batman&plot=full&type=movie&tomatoes=true&r=json';
+	function getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min) + min);
+	};
+	
+	// https://image.tmdb.org/t/p/w320/
+	
+	var id;
+	var showMovie;
+	var defaultPoster = './source/img/default_poster.jpg';
 	
 	var Main = _react2.default.createClass({
-	  displayName: 'Main',
+		displayName: 'Main',
 	
-	  getInitialState: function getInitialState() {
-	    return {
-	      game: false
-	    };
-	  },
-	  getMovie: function getMovie() {
-	    console.log('button clicked, getMovie function triggered');
-	    this.setState({ game: true });
-	    return (0, _isomorphicFetch2.default)(movieaurl).then(function (response) {
-	      if (response.status < 200 || response.status >= 300) {
-	        var error = new Error(response.statusText);
-	        error.response = response;
-	        console.log(error);
-	        throw error;
-	      }
-	      console.log(response);
-	      return response;
-	    });
-	  },
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'div',
-	      { className: 'main' },
-	      _react2.default.createElement(
-	        'h1',
-	        null,
-	        'TomatoTime!'
-	      ),
-	      _react2.default.createElement(_Score2.default, null),
-	      _react2.default.createElement(_Poster2.default, { getMovie: this.getMovie }),
-	      _react2.default.createElement(_Guess2.default, null)
-	    );
-	  }
+		getInitialState: function getInitialState() {
+			return {
+				game: false,
+				ratingInput: '',
+				timeInput: '',
+				posterTitle: '',
+				posterUrl: '',
+				rating: '',
+				time: '',
+				score: 0
+			};
+		},
+		getMovie: function getMovie() {
+			var _this = this;
+	
+			console.log('button clicked, getMovie function triggered');
+			this.setState({ game: true, ratingInput: '', timeInput: '' });
+			var page = getRandomInt(1, 250);
+			var searchurl = 'https://api.themoviedb.org/3/movie/popular?api_key=342d326aba75ee271f3e2cb0fbfa3584&language=en-US&page=' + page;
+			return (0, _isomorphicFetch2.default)(searchurl).then(function (response) {
+				return response.json();
+			}).then(function (responseJson) {
+				var oneMovie = responseJson.results[getRandomInt(0, responseJson.results.length)];
+				console.log(oneMovie);
+				_this.setState({ posterUrl: 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path, posterTitle: oneMovie.title });
+			}).then(function (movieDetail) {
+				console.log(_this.state.posterTitle);
+				var detailUrl = 'https://www.omdbapi.com/?t=' + _this.state.posterTitle + '&plot=full&type=movie&tomatoes=true&r=json';
+				(0, _isomorphicFetch2.default)(detailUrl).then(function (resp) {
+					return resp.json();
+				}).then(function (respJson) {
+					showMovie = respJson;
+					console.log(showMovie);
+	
+					var rating = showMovie.tomatoRating;
+					rating = rating === 'N/A' ? showMovie.imdbRating : rating;
+					rating = rating === 'N/A' || rating == '' ? getRandomInt(1, 9) + '.' + getRandomInt(1, 10) : rating;
+	
+					var time = showMovie.Runtime;
+					time = time === 'N/A' || time == '' ? getRandomInt(1, 160) + ' min' : time;
+	
+					_this.setState({ rating: rating, time: time });
+					return showMovie;
+				});
+			}).catch(function (error) {
+				console.error(error);
+			});
+		},
+		addScore: function addScore(add) {
+			var score = this.state.score;
+			this.setState({ score: score += parseInt(add) });
+		},
+		render: function render() {
+			return _react2.default.createElement(
+				'div',
+				{ className: 'main' },
+				_react2.default.createElement(
+					'h1',
+					null,
+					'TomatoTime!'
+				),
+				_react2.default.createElement(_Score2.default, { score: this.state.score }),
+				_react2.default.createElement(_Poster2.default, { getMovie: this.getMovie, url: this.state.posterUrl, title: this.state.posterTitle }),
+				_react2.default.createElement(_Guess2.default, { addScore: this.addScore, rating: this.state.rating, time: this.state.time, ratingInput: this.state.ratingInput, timeInput: this.state.timeInput })
+			);
+		}
 	});
 	
 	exports.default = Main;
@@ -28747,25 +28788,26 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	/* https://www.omdbapi.com/?t={ movie }&plot=full&type=movie&tomatoes=true&r=json
-		posterFunction: function(){
-			console.log('poster function');
-		},
-	*/
-	
-	var Poster = function Poster(props) {
-		return _react2.default.createElement(
-			'div',
-			{ className: 'poster' },
-			_react2.default.createElement(
-				'button',
-				{ onClick: props.getMovie, type: 'button' },
-				'Begin'
-			),
-			_react2.default.createElement('img', null),
-			'This will be a movie poster. (it will be taller)'
-		);
-	};
+	var Poster = _react2.default.createClass({
+		displayName: 'Poster',
+		render: function render() {
+			return _react2.default.createElement(
+				'div',
+				{ className: 'poster' },
+				_react2.default.createElement(
+					'h2',
+					null,
+					this.props.title
+				),
+				_react2.default.createElement('img', { src: this.props.url }),
+				_react2.default.createElement(
+					'button',
+					{ onClick: this.props.getMovie, type: 'button' },
+					'Begin'
+				)
+			);
+		}
+	});
 	
 	exports.default = Poster;
 
@@ -28794,13 +28836,26 @@
 			e.preventDefault();
 			var tomato = this.refs.rating.value;
 			console.log('tomato guess is: ' + tomato);
+			console.log('correct rating: ' + this.props.rating);
+			var correctRating = tomato === this.props.rating ? true : false;
+			if (correctRating) {
+				this.handleScore();
+			};
 			this.refs.guessForm.reset();
 		},
 		timeGuess: function timeGuess(e) {
 			e.preventDefault();
-			var duration = this.refs.time.value;
+			var duration = this.refs.time.value + ' min';
 			console.log('time guess is: ' + duration);
+			console.log('correct time: ' + this.props.time);
+			var correctTime = duration === this.props.time ? true : false;
+			if (correctTime) {
+				this.handleScore();
+			};
 			this.refs.guessForm.reset();
+		},
+		handleScore: function handleScore() {
+			this.props.addScore(1);
 		},
 		render: function render() {
 			return _react2.default.createElement(
@@ -28812,19 +28867,22 @@
 					_react2.default.createElement(
 						'h4',
 						null,
-						'This is a form for guessing'
+						'This is a form for guessing ',
+						this.props.rating,
+						' ',
+						this.props.time
 					),
-					_react2.default.createElement('input', { type: 'text', ref: 'rating', placeholder: '3.14' }),
+					_react2.default.createElement('input', { type: 'text', ref: 'rating', disabled: this.props.ratingInput, placeholder: 'Guess 0.0 to 10.0' }),
 					_react2.default.createElement(
 						'button',
 						{ onClick: this.tomatoGuess, type: 'submit' },
-						'Rotten Tomatoes'
+						'Tomatoes'
 					),
-					_react2.default.createElement('input', { type: 'text', ref: 'time', placeholder: '60' }),
+					_react2.default.createElement('input', { type: 'text', ref: 'time', disabled: this.props.timeInput, placeholder: 'How many minutes?' }),
 					_react2.default.createElement(
 						'button',
 						{ onClick: this.timeGuess, type: 'submit' },
-						'Movie Length'
+						'Time'
 					)
 				)
 			);
@@ -28858,9 +28916,14 @@
 				'div',
 				{ className: 'score' },
 				_react2.default.createElement(
+					'h3',
+					null,
+					'Your Score:'
+				),
+				_react2.default.createElement(
 					'h4',
 					null,
-					'Track highest score here'
+					this.props.score
 				),
 				_react2.default.createElement(
 					'p',

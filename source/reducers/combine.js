@@ -4,10 +4,10 @@ import {routerReducer} from 'react-router-redux';
 
 /*
 
-var initialRepositoryState = [];
+var initialMovie = {};
 
 var repositoryReducer = function(state, action) {
-    state = state || initialRepositoryState;
+    state = state || initialMovie;
     if (action.type === actions.ADD_REPOSITORY) {
         return state.concat({
             name: action.repository,
