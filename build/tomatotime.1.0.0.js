@@ -23161,7 +23161,13 @@
 	
 	var id;
 	var showMovie;
+	var seconds = 1;
+	var tempState = {};
 	var defaultPoster = './source/img/default_poster.jpg';
+	
+	// react router - top score, leaderboard
+	// redux 
+	// stop at 10 movies
 	
 	var Main = _react2.default.createClass({
 		displayName: 'Main',
@@ -23182,18 +23188,24 @@
 			var _this = this;
 	
 			console.log('getting new movie');
-			this.setState({ game: false, ratingInput: false, timeInput: false });
-			var page = getRandomInt(1, 250);
+			this.setState({ ratingInput: false, timeInput: false });
+			var page = getRandomInt(1, 150);
 			var searchurl = 'https://api.themoviedb.org/3/movie/popular?api_key=342d326aba75ee271f3e2cb0fbfa3584&language=en-US&page=' + page;
 			return (0, _isomorphicFetch2.default)(searchurl).then(function (response) {
 				return response.json();
 			}).then(function (responseJson) {
 				var oneMovie = responseJson.results[getRandomInt(0, responseJson.results.length)];
 				console.log(oneMovie);
-				_this.setState({ game: false, posterUrl: 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path, posterTitle: oneMovie.title });
+	
+				// set temp state here
+				tempState.posterUrl = 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path;
+				tempState.posterTitle = oneMovie.title;
+	
+				//	this.setState({ posterUrl: 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path, posterTitle: oneMovie.title});
 			}).then(function (movieDetail) {
-				console.log(_this.state.posterTitle);
-				var detailUrl = 'https://www.omdbapi.com/?t=' + _this.state.posterTitle + '&plot=full&type=movie&tomatoes=true&r=json';
+	
+				console.log(tempState.posterTitle);
+				var detailUrl = 'https://www.omdbapi.com/?t=' + tempState.posterTitle + '&plot=full&type=movie&tomatoes=true&r=json';
 				(0, _isomorphicFetch2.default)(detailUrl).then(function (resp) {
 					return resp.json();
 				}).then(function (respJson) {
@@ -23202,12 +23214,16 @@
 	
 					var rating = showMovie.tomatoRating;
 					rating = rating === 'N/A' ? showMovie.imdbRating : rating;
-					rating = rating === 'N/A' || rating === 'null' ? getRandomInt(1, 9) + '.' + getRandomInt(1, 10) : rating;
+					rating = rating === 'N/A' || rating === 'null' || !rating ? getRandomInt(1, 9) + '.' + getRandomInt(1, 10) : rating;
 	
 					var time = showMovie.Runtime;
-					time = time === 'N/A' || time === 'null' ? getRandomInt(1, 160) + ' min' : time;
+					time = time === 'N/A' || time === 'null' || !time ? getRandomInt(1, 160) + ' min' : time;
 	
-					_this.setState({ game: true, rating: rating, time: time });
+					//add to temp state before setting state
+					tempState.rating = rating;
+					tempState.time = time;
+					_this.setState(tempState);
+					//	this.setState({ rating: rating, time: time});
 					return showMovie;
 				});
 			}).catch(function (error) {
@@ -23216,20 +23232,21 @@
 		},
 		addScore: function addScore(add) {
 			var score = this.state.score;
+			console.log('SCORE IS: ' + seconds);
 	
 			if (this.state.timeInput == true && this.state.ratingInput == true) {
 				console.log('call new game here');
 			};
-			this.setState({ score: score += parseInt(add) });
+			this.setState({ score: score += parseInt(seconds) });
 		},
 		disable: function disable(type) {
 			this.setState(_defineProperty({}, type, true));
 		},
 		getTimer: function getTimer(timer) {
-			var x = timer;
-			return x;
+			seconds = timer;
 		},
 		render: function render() {
+			var initialTime = 10000;
 			return _react2.default.createElement(
 				'div',
 				{ className: 'main' },
@@ -23238,10 +23255,14 @@
 					null,
 					'TomatoTime!'
 				),
-				_react2.default.createElement(_Score2.default, { score: this.state.score }),
 				_react2.default.createElement(_Poster2.default, { getMovie: this.getMovie, url: this.state.posterUrl, title: this.state.posterTitle }),
-				_react2.default.createElement(_CountdownTimer2.default, { initialTimeRemaining: '100000' }),
-				_react2.default.createElement(_Guess2.default, { disable: this.disable, addScore: this.addScore, rating: this.state.rating, time: this.state.time, ratingInput: this.state.ratingInput, timeInput: this.state.timeInput })
+				_react2.default.createElement(
+					'div',
+					{ className: 'right' },
+					_react2.default.createElement(_Score2.default, { score: this.state.score }),
+					_react2.default.createElement(_CountdownTimer2.default, { completeCallback: this.getMovie, tickCallback: this.getTimer, initialTimeRemaining: initialTime }),
+					_react2.default.createElement(_Guess2.default, { disable: this.disable, addScore: this.addScore, rating: this.state.rating, time: this.state.time, ratingInput: this.state.ratingInput, timeInput: this.state.timeInput })
+				)
 			);
 		}
 	});
@@ -29432,7 +29453,7 @@
 	//   - completeCallback(): Function (optional)
 	//       A function to call when the countdown completes.
 	//
-	var CountdownTimer2 = React.createClass({
+	var CountdownTimer = React.createClass({
 	  displayName: 'CountdownTimer',
 	
 	  propTypes: {
@@ -29463,7 +29484,7 @@
 	  },
 	
 	  componentDidMount: function componentDidMount() {
-	    this.tick();
+	    // this.tick();
 	  },
 	
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
@@ -29556,7 +29577,7 @@
 	  }
 	});
 	
-	module.exports = CountdownTimer2;
+	module.exports = CountdownTimer;
 
 /***/ }
 /******/ ]);

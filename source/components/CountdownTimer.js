@@ -20,7 +20,7 @@ var React = require('react');
 //   - completeCallback(): Function (optional)
 //       A function to call when the countdown completes.
 //
-var CountdownTimer2 = React.createClass({
+var CountdownTimer = React.createClass({
   displayName: 'CountdownTimer',
 
   propTypes: {
@@ -51,7 +51,7 @@ var CountdownTimer2 = React.createClass({
   },
 
   componentDidMount: function() {
-    this.tick();
+    // this.tick();
   },
 
   componentWillReceiveProps: function(newProps) {
@@ -133,4 +133,4 @@ var CountdownTimer2 = React.createClass({
   }
 });
 
-module.exports = CountdownTimer2;
+module.exports = CountdownTimer;
