@@ -35,7 +35,8 @@ const Guess = React.createClass({
 	render(){
 		return (
 			<div className='guess'>
-				<h4>This is a placeholder for guesses {this.props.rating} {this.props.time}</h4>
+				<h4>Answers {this.props.rating} {this.props.time}</h4>
+				<h3>Round {this.props.game} of 10</h3>
 				<form ref='guessForm'>
 					<input 
 						type='text' 

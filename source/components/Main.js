@@ -14,9 +14,10 @@ var id;
 var showMovie;
 var seconds = 1;
 var tempState = {};
+var counter = 0;
 var buttonDisabled = {
-	rating: false,
-	time: false,
+	ratingInput: false,
+	timeInput: false
 };
 const defaultPoster = './source/img/default_poster.jpg';
 
@@ -27,7 +28,7 @@ const defaultPoster = './source/img/default_poster.jpg';
 const Main = React.createClass({
 	getInitialState: function () {
 	    return {
-	      game:  false,
+	      game:  0,
 	      ratingInput: false,
 	      timeInput: false,
 	      posterTitle: '',
@@ -39,9 +40,13 @@ const Main = React.createClass({
   	},
   	getMovie: function() {
   		console.log('getting new movie');
-
-  		this.setState({ ratingInput: false, timeInput: false });
-		var page = getRandomInt(1, 150);
+  		buttonDisabled	= {
+			ratingInput: false,
+	      	timeInput: false
+		};
+		counter += 1;
+  		this.setState({ game: counter, ratingInput: false, timeInput: false });
+		var page = getRandomInt(1, 100);
 		var searchurl = 'https://api.themoviedb.org/3/movie/popular?api_key=342d326aba75ee271f3e2cb0fbfa3584&language=en-US&page=' + page;
 		return fetch(searchurl)
 	      	.then((response) => response.json())
@@ -50,7 +55,12 @@ const Main = React.createClass({
 		     	console.log(oneMovie);
 
 		     	// set temp state here
-		     	tempState.posterUrl = 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path;
+		     	if (oneMovie.poster_path == null) {
+		     		tempState.posterUrl = defaultPoster;
+		     	}
+		     	else {
+		     		tempState.posterUrl = 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path;		     		
+		     	};
 		     	tempState.posterTitle = oneMovie.title;
 
 		     //	this.setState({ posterUrl: 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path, posterTitle: oneMovie.title});
@@ -67,10 +77,10 @@ const Main = React.createClass({
 
 		      			var rating = showMovie.tomatoRating;
 		      			rating = (rating === 'N/A' ? showMovie.imdbRating : rating);
-		      			rating = (rating === 'N/A' || rating === 'null' || !rating ? getRandomInt(1, 9) + '.' + getRandomInt(1,10) : rating);
+		      			rating = (rating === 'N/A' || rating == null || !rating ? getRandomInt(1, 9) + '.' + getRandomInt(1,10) : rating);
 
 		      			var time = showMovie.Runtime;
-		      			time = (time === 'N/A' || time === 'null' || !time ? getRandomInt(1, 160) + ' min' : time);
+		      			time = (time === 'N/A' || time == null || !time ? getRandomInt(1, 160) + ' min' : time);
 
 		      			//add to temp state before setting state
 						tempState.rating = rating;
@@ -87,36 +97,38 @@ const Main = React.createClass({
   	addScore: function(add) {
   		var score = this.state.score;
   		console.log('SCORE IS: ' + seconds);
-
-  		if (this.state.timeInput == true && this.state.ratingInput == true) {
-  			console.log('call new game here');
-  		};
   		this.setState({ score: score += parseInt(seconds)});
   	},
   	disable: function(type) {
+  		buttonDisabled[type] = true,
+  		console.log(buttonDisabled);
   		this.setState({ [type]: true });
   	},
   	getTimer: function(timer) {
   		seconds = timer;
   	},
+  	endGame: function() {
+  		console.log('LE FIN');
+  	},
 	render() {
-		var initialTime = 10000;
+		var initialTime = 15000;
 		return (
 			<div className='main'>
 				<h1 className='title'>TomatoTime!</h1>
 				< Poster 
-					getMovie={this.getMovie} 
+					getMovie={ counter == '10' ? this.endGame : this.getMovie } 
 					url={this.state.posterUrl} 
 					title={this.state.posterTitle} 
 				/>
 				<div className='right'>
 					< Score score={this.state.score} />
 					< CountdownTimer 
-						completeCallback={this.getMovie} 
+						completeCallback={ counter == '10' ? this.endGame : this.getMovie } 
 						tickCallback={this.getTimer} 
 						initialTimeRemaining={initialTime} 
 					/>
 					< Guess 
+						game={this.state.game} 
 						disable={this.disable} 
 						addScore={this.addScore} 
 						rating={this.state.rating} 

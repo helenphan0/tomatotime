@@ -23163,9 +23163,10 @@
 	var showMovie;
 	var seconds = 1;
 	var tempState = {};
+	var counter = 0;
 	var buttonDisabled = {
-		rating: false,
-		time: false
+		ratingInput: false,
+		timeInput: false
 	};
 	var defaultPoster = './source/img/default_poster.jpg';
 	
@@ -23178,7 +23179,7 @@
 	
 		getInitialState: function getInitialState() {
 			return {
-				game: false,
+				game: 0,
 				ratingInput: false,
 				timeInput: false,
 				posterTitle: '',
@@ -23192,9 +23193,13 @@
 			var _this = this;
 	
 			console.log('getting new movie');
-	
-			this.setState({ ratingInput: false, timeInput: false });
-			var page = getRandomInt(1, 150);
+			buttonDisabled = {
+				ratingInput: false,
+				timeInput: false
+			};
+			counter += 1;
+			this.setState({ game: counter, ratingInput: false, timeInput: false });
+			var page = getRandomInt(1, 100);
 			var searchurl = 'https://api.themoviedb.org/3/movie/popular?api_key=342d326aba75ee271f3e2cb0fbfa3584&language=en-US&page=' + page;
 			return (0, _isomorphicFetch2.default)(searchurl).then(function (response) {
 				return response.json();
@@ -23203,7 +23208,11 @@
 				console.log(oneMovie);
 	
 				// set temp state here
-				tempState.posterUrl = 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path;
+				if (oneMovie.poster_path == null) {
+					tempState.posterUrl = defaultPoster;
+				} else {
+					tempState.posterUrl = 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path;
+				};
 				tempState.posterTitle = oneMovie.title;
 	
 				//	this.setState({ posterUrl: 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path, posterTitle: oneMovie.title});
@@ -23219,10 +23228,10 @@
 	
 					var rating = showMovie.tomatoRating;
 					rating = rating === 'N/A' ? showMovie.imdbRating : rating;
-					rating = rating === 'N/A' || rating === 'null' || !rating ? getRandomInt(1, 9) + '.' + getRandomInt(1, 10) : rating;
+					rating = rating === 'N/A' || rating == null || !rating ? getRandomInt(1, 9) + '.' + getRandomInt(1, 10) : rating;
 	
 					var time = showMovie.Runtime;
-					time = time === 'N/A' || time === 'null' || !time ? getRandomInt(1, 160) + ' min' : time;
+					time = time === 'N/A' || time == null || !time ? getRandomInt(1, 160) + ' min' : time;
 	
 					//add to temp state before setting state
 					tempState.rating = rating;
@@ -23238,20 +23247,20 @@
 		addScore: function addScore(add) {
 			var score = this.state.score;
 			console.log('SCORE IS: ' + seconds);
-	
-			if (this.state.timeInput == true && this.state.ratingInput == true) {
-				console.log('call new game here');
-			};
 			this.setState({ score: score += parseInt(seconds) });
 		},
 		disable: function disable(type) {
+			buttonDisabled[type] = true, console.log(buttonDisabled);
 			this.setState(_defineProperty({}, type, true));
 		},
 		getTimer: function getTimer(timer) {
 			seconds = timer;
 		},
+		endGame: function endGame() {
+			console.log('LE FIN');
+		},
 		render: function render() {
-			var initialTime = 10000;
+			var initialTime = 15000;
 			return _react2.default.createElement(
 				'div',
 				{ className: 'main' },
@@ -23261,7 +23270,7 @@
 					'TomatoTime!'
 				),
 				_react2.default.createElement(_Poster2.default, {
-					getMovie: this.getMovie,
+					getMovie: counter == '10' ? this.endGame : this.getMovie,
 					url: this.state.posterUrl,
 					title: this.state.posterTitle
 				}),
@@ -23270,11 +23279,12 @@
 					{ className: 'right' },
 					_react2.default.createElement(_Score2.default, { score: this.state.score }),
 					_react2.default.createElement(_CountdownTimer2.default, {
-						completeCallback: this.getMovie,
+						completeCallback: counter == '10' ? this.endGame : this.getMovie,
 						tickCallback: this.getTimer,
 						initialTimeRemaining: initialTime
 					}),
 					_react2.default.createElement(_Guess2.default, {
+						game: this.state.game,
 						disable: this.disable,
 						addScore: this.addScore,
 						rating: this.state.rating,
@@ -28926,10 +28936,17 @@
 				_react2.default.createElement(
 					'h4',
 					null,
-					'This is a placeholder for guesses ',
+					'Answers ',
 					this.props.rating,
 					' ',
 					this.props.time
+				),
+				_react2.default.createElement(
+					'h3',
+					null,
+					'Round ',
+					this.props.game,
+					' of 10'
 				),
 				_react2.default.createElement(
 					'form',
@@ -29137,7 +29154,8 @@
 	    minutes = minutes < 10 ? '0' + minutes : minutes;
 	    hours = hours < 10 ? '0' + hours : hours;
 	
-	    return hours + ':' + minutes + ':' + seconds;
+	    // return hours + ':' + minutes + ':' + seconds;
+	    return totalSeconds;
 	  },
 	
 	  render: function render() {

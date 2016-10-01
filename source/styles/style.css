@@ -83,6 +83,7 @@ input {
 	width: 99%;
 	height: 40px;
 	padding: 4px 10px;
+	text-align: center;
 }
 
 input:nth-of-type(2) {
