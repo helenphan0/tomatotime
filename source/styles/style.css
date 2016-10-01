@@ -8,22 +8,52 @@ body {
 
 div {
 	border: 1px solid lightgrey;
-	margin: 15px auto;
+	margin: 10px auto;
+
 }
 .main {
 	width: 80%;
-
-
+	text-align: center;
 }
 
 h1 {
 	text-align: center;
 }
 
-.score, .poster, .guess {
+h2, h3, h4 {
+	margin: 5px;
+}
+
+.score, .poster, .guess, .timer {
 	width: 45%;
 }
 
 .poster {
 	height: 50%;
+	padding: 10px;
+}
+
+.poster>img {
+	display: block;
+	margin: 10px auto;
+}
+
+.guess {
+	padding: 15px;
+}
+
+form {
+	text-align: left;
+	padding: 15px;
+}
+
+input {
+	width: 70%;
+	height: 35px;
+	padding: 4px;
+}
+
+button {
+	width: 29%;
+	height: 35px;
 }

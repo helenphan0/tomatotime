@@ -5,9 +5,8 @@ const Score = React.createClass({
 	render(){
 		return (
 			<div className='score'>
-					<h3>Your Score:</h3>
-					<h4>{this.props.score}</h4>
-					<p>A number countdown happens here</p>
+					<h3>Your Score</h3>
+					<h3>{this.props.score}</h3>
 			</div>
 		)
 	}
