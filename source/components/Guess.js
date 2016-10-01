@@ -37,9 +37,20 @@ const Guess = React.createClass({
 			<div className='guess'>
 				<h4>This is a placeholder for guesses {this.props.rating} {this.props.time}</h4>
 				<form ref='guessForm'>
-					<input type='text' ref='rating' disabled={this.props.ratingInput} placeholder={this.props.ratingInput == true ? 'Correct answer!' : 'Guess 0.0 to 10.0' } />
+					<input 
+						type='text' 
+						ref='rating' 
+						disabled={this.props.ratingInput} 
+						onSubmit={this.tomatoGuess} 
+						placeholder={this.props.ratingInput == true ? 'Correct answer!' : 'Guess 0.0 to 10.0' } 
+					/>
 					<button onClick={this.tomatoGuess} type='button'>Tomatoes</button>
-					<input type='text' ref='time' disabled={this.props.timeInput} placeholder={this.props.timeInput == true ? 'Correct answer!' : 'How many minutes?' } />
+					<input 
+						type='text' 
+						ref='time' 
+						disabled={this.props.timeInput} 
+						placeholder={this.props.timeInput == true ? 'Correct answer!' : 'How many minutes?' } 
+					/>
 					<button onClick={this.timeGuess} type='button'>Time</button>
 				</form>
 			</div>

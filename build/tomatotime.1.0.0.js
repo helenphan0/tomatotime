@@ -23143,7 +23143,7 @@
 	
 	var _Score2 = _interopRequireDefault(_Score);
 	
-	var _CountdownTimer = __webpack_require__(265);
+	var _CountdownTimer = __webpack_require__(262);
 	
 	var _CountdownTimer2 = _interopRequireDefault(_CountdownTimer);
 	
@@ -23163,6 +23163,10 @@
 	var showMovie;
 	var seconds = 1;
 	var tempState = {};
+	var buttonDisabled = {
+		rating: false,
+		time: false
+	};
 	var defaultPoster = './source/img/default_poster.jpg';
 	
 	// react router - top score, leaderboard
@@ -23188,6 +23192,7 @@
 			var _this = this;
 	
 			console.log('getting new movie');
+	
 			this.setState({ ratingInput: false, timeInput: false });
 			var page = getRandomInt(1, 150);
 			var searchurl = 'https://api.themoviedb.org/3/movie/popular?api_key=342d326aba75ee271f3e2cb0fbfa3584&language=en-US&page=' + page;
@@ -23252,16 +23257,31 @@
 				{ className: 'main' },
 				_react2.default.createElement(
 					'h1',
-					null,
+					{ className: 'title' },
 					'TomatoTime!'
 				),
-				_react2.default.createElement(_Poster2.default, { getMovie: this.getMovie, url: this.state.posterUrl, title: this.state.posterTitle }),
+				_react2.default.createElement(_Poster2.default, {
+					getMovie: this.getMovie,
+					url: this.state.posterUrl,
+					title: this.state.posterTitle
+				}),
 				_react2.default.createElement(
 					'div',
 					{ className: 'right' },
 					_react2.default.createElement(_Score2.default, { score: this.state.score }),
-					_react2.default.createElement(_CountdownTimer2.default, { completeCallback: this.getMovie, tickCallback: this.getTimer, initialTimeRemaining: initialTime }),
-					_react2.default.createElement(_Guess2.default, { disable: this.disable, addScore: this.addScore, rating: this.state.rating, time: this.state.time, ratingInput: this.state.ratingInput, timeInput: this.state.timeInput })
+					_react2.default.createElement(_CountdownTimer2.default, {
+						completeCallback: this.getMovie,
+						tickCallback: this.getTimer,
+						initialTimeRemaining: initialTime
+					}),
+					_react2.default.createElement(_Guess2.default, {
+						disable: this.disable,
+						addScore: this.addScore,
+						rating: this.state.rating,
+						time: this.state.time,
+						ratingInput: this.state.ratingInput,
+						timeInput: this.state.timeInput
+					})
 				)
 			);
 		}
@@ -28914,13 +28934,24 @@
 				_react2.default.createElement(
 					'form',
 					{ ref: 'guessForm' },
-					_react2.default.createElement('input', { type: 'text', ref: 'rating', disabled: this.props.ratingInput, placeholder: this.props.ratingInput == true ? 'Correct answer!' : 'Guess 0.0 to 10.0' }),
+					_react2.default.createElement('input', {
+						type: 'text',
+						ref: 'rating',
+						disabled: this.props.ratingInput,
+						onSubmit: this.tomatoGuess,
+						placeholder: this.props.ratingInput == true ? 'Correct answer!' : 'Guess 0.0 to 10.0'
+					}),
 					_react2.default.createElement(
 						'button',
 						{ onClick: this.tomatoGuess, type: 'button' },
 						'Tomatoes'
 					),
-					_react2.default.createElement('input', { type: 'text', ref: 'time', disabled: this.props.timeInput, placeholder: this.props.timeInput == true ? 'Correct answer!' : 'How many minutes?' }),
+					_react2.default.createElement('input', {
+						type: 'text',
+						ref: 'time',
+						disabled: this.props.timeInput,
+						placeholder: this.props.timeInput == true ? 'Correct answer!' : 'How many minutes?'
+					}),
 					_react2.default.createElement(
 						'button',
 						{ onClick: this.timeGuess, type: 'button' },
@@ -28958,13 +28989,13 @@
 				'div',
 				{ className: 'score' },
 				_react2.default.createElement(
-					'h3',
+					'h2',
 					null,
 					'Your Score'
 				),
 				_react2.default.createElement(
-					'h3',
-					null,
+					'h2',
+					{ className: 'score-number' },
 					this.props.score
 				)
 			);
@@ -28974,7 +29005,160 @@
 	exports.default = Score;
 
 /***/ },
-/* 262 */,
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	
+	// Generic Countdown Timer UI component
+	//
+	// https://github.com/uken/react-countdown-timer
+	//
+	// props:
+	//   - initialTimeRemaining: Number
+	//       The time remaining for the countdown (in ms).
+	//
+	//   - interval: Number (optional -- default: 1000ms)
+	//       The time between timer ticks (in ms).
+	//
+	//   - formatFunc(timeRemaining): Function (optional)
+	//       A function that formats the timeRemaining.
+	//
+	//   - tickCallback(timeRemaining): Function (optional)
+	//       A function to call each tick.
+	//
+	//   - completeCallback(): Function (optional)
+	//       A function to call when the countdown completes.
+	//
+	var CountdownTimer = React.createClass({
+	  displayName: 'CountdownTimer',
+	
+	  propTypes: {
+	    initialTimeRemaining: React.PropTypes.number.isRequired,
+	    interval: React.PropTypes.number,
+	    formatFunc: React.PropTypes.func,
+	    tickCallback: React.PropTypes.func,
+	    completeCallback: React.PropTypes.func
+	  },
+	
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      interval: 1000,
+	      formatFunc: null,
+	      tickCallback: null,
+	      completeCallback: null
+	    };
+	  },
+	
+	  getInitialState: function getInitialState() {
+	    // Normally an anti-pattern to use this.props in getInitialState,
+	    // but these are all initializations (not an anti-pattern).
+	    return {
+	      timeRemaining: this.props.initialTimeRemaining,
+	      timeoutId: null,
+	      prevTime: null
+	    };
+	  },
+	
+	  componentDidMount: function componentDidMount() {
+	    // this.tick();
+	  },
+	
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    if (this.state.timeoutId) {
+	      clearTimeout(this.state.timeoutId);
+	    }
+	    this.setState({ prevTime: null, timeRemaining: newProps.initialTimeRemaining });
+	  },
+	
+	  componentDidUpdate: function componentDidUpdate() {
+	    if (!this.state.prevTime && this.state.timeRemaining > 0 && this.isMounted()) {
+	      this.tick();
+	    }
+	  },
+	
+	  componentWillUnmount: function componentWillUnmount() {
+	    clearTimeout(this.state.timeoutId);
+	  },
+	
+	  tick: function tick() {
+	    var currentTime = Date.now();
+	    var dt = this.state.prevTime ? currentTime - this.state.prevTime : 0;
+	    var interval = this.props.interval;
+	
+	    // correct for small variations in actual timeout time
+	    var timeRemainingInInterval = interval - dt % interval;
+	    var timeout = timeRemainingInInterval;
+	
+	    if (timeRemainingInInterval < interval / 2.0) {
+	      timeout += interval;
+	    }
+	
+	    var timeRemaining = Math.max(this.state.timeRemaining - dt, 0);
+	    var countdownComplete = this.state.prevTime && timeRemaining <= 0;
+	
+	    if (this.isMounted()) {
+	      if (this.state.timeoutId) {
+	        clearTimeout(this.state.timeoutId);
+	      }
+	      this.setState({
+	        timeoutId: countdownComplete ? null : setTimeout(this.tick, timeout),
+	        prevTime: currentTime,
+	        timeRemaining: timeRemaining
+	      });
+	    }
+	
+	    if (countdownComplete) {
+	      if (this.props.completeCallback) {
+	        this.props.completeCallback();
+	      }
+	      return;
+	    }
+	
+	    if (this.props.tickCallback) {
+	      this.props.tickCallback(timeRemaining);
+	    }
+	  },
+	
+	  getFormattedTime: function getFormattedTime(milliseconds) {
+	    if (this.props.formatFunc) {
+	      return this.props.formatFunc(milliseconds);
+	    }
+	
+	    var totalSeconds = Math.round(milliseconds / 1000);
+	
+	    var seconds = parseInt(totalSeconds % 60, 10);
+	    var minutes = parseInt(totalSeconds / 60, 10) % 60;
+	    var hours = parseInt(totalSeconds / 3600, 10);
+	
+	    seconds = seconds < 10 ? '0' + seconds : seconds;
+	    minutes = minutes < 10 ? '0' + minutes : minutes;
+	    hours = hours < 10 ? '0' + hours : hours;
+	
+	    return hours + ':' + minutes + ':' + seconds;
+	  },
+	
+	  render: function render() {
+	    var timeRemaining = this.state.timeRemaining;
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'timer' },
+	      React.createElement(
+	        'h3',
+	        null,
+	        this.getFormattedTime(timeRemaining),
+	        ' '
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = CountdownTimer;
+
+/***/ },
 /* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -29424,160 +29608,6 @@
 	  self.fetch.polyfill = true
 	})(typeof self !== 'undefined' ? self : this);
 
-
-/***/ },
-/* 265 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var React = __webpack_require__(1);
-	
-	// Generic Countdown Timer UI component
-	//
-	// https://github.com/uken/react-countdown-timer
-	//
-	// props:
-	//   - initialTimeRemaining: Number
-	//       The time remaining for the countdown (in ms).
-	//
-	//   - interval: Number (optional -- default: 1000ms)
-	//       The time between timer ticks (in ms).
-	//
-	//   - formatFunc(timeRemaining): Function (optional)
-	//       A function that formats the timeRemaining.
-	//
-	//   - tickCallback(timeRemaining): Function (optional)
-	//       A function to call each tick.
-	//
-	//   - completeCallback(): Function (optional)
-	//       A function to call when the countdown completes.
-	//
-	var CountdownTimer = React.createClass({
-	  displayName: 'CountdownTimer',
-	
-	  propTypes: {
-	    initialTimeRemaining: React.PropTypes.number.isRequired,
-	    interval: React.PropTypes.number,
-	    formatFunc: React.PropTypes.func,
-	    tickCallback: React.PropTypes.func,
-	    completeCallback: React.PropTypes.func
-	  },
-	
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      interval: 1000,
-	      formatFunc: null,
-	      tickCallback: null,
-	      completeCallback: null
-	    };
-	  },
-	
-	  getInitialState: function getInitialState() {
-	    // Normally an anti-pattern to use this.props in getInitialState,
-	    // but these are all initializations (not an anti-pattern).
-	    return {
-	      timeRemaining: this.props.initialTimeRemaining,
-	      timeoutId: null,
-	      prevTime: null
-	    };
-	  },
-	
-	  componentDidMount: function componentDidMount() {
-	    // this.tick();
-	  },
-	
-	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	    if (this.state.timeoutId) {
-	      clearTimeout(this.state.timeoutId);
-	    }
-	    this.setState({ prevTime: null, timeRemaining: newProps.initialTimeRemaining });
-	  },
-	
-	  componentDidUpdate: function componentDidUpdate() {
-	    if (!this.state.prevTime && this.state.timeRemaining > 0 && this.isMounted()) {
-	      this.tick();
-	    }
-	  },
-	
-	  componentWillUnmount: function componentWillUnmount() {
-	    clearTimeout(this.state.timeoutId);
-	  },
-	
-	  tick: function tick() {
-	    var currentTime = Date.now();
-	    var dt = this.state.prevTime ? currentTime - this.state.prevTime : 0;
-	    var interval = this.props.interval;
-	
-	    // correct for small variations in actual timeout time
-	    var timeRemainingInInterval = interval - dt % interval;
-	    var timeout = timeRemainingInInterval;
-	
-	    if (timeRemainingInInterval < interval / 2.0) {
-	      timeout += interval;
-	    }
-	
-	    var timeRemaining = Math.max(this.state.timeRemaining - dt, 0);
-	    var countdownComplete = this.state.prevTime && timeRemaining <= 0;
-	
-	    if (this.isMounted()) {
-	      if (this.state.timeoutId) {
-	        clearTimeout(this.state.timeoutId);
-	      }
-	      this.setState({
-	        timeoutId: countdownComplete ? null : setTimeout(this.tick, timeout),
-	        prevTime: currentTime,
-	        timeRemaining: timeRemaining
-	      });
-	    }
-	
-	    if (countdownComplete) {
-	      if (this.props.completeCallback) {
-	        this.props.completeCallback();
-	      }
-	      return;
-	    }
-	
-	    if (this.props.tickCallback) {
-	      this.props.tickCallback(timeRemaining);
-	    }
-	  },
-	
-	  getFormattedTime: function getFormattedTime(milliseconds) {
-	    if (this.props.formatFunc) {
-	      return this.props.formatFunc(milliseconds);
-	    }
-	
-	    var totalSeconds = Math.round(milliseconds / 1000);
-	
-	    var seconds = parseInt(totalSeconds % 60, 10);
-	    var minutes = parseInt(totalSeconds / 60, 10) % 60;
-	    var hours = parseInt(totalSeconds / 3600, 10);
-	
-	    seconds = seconds < 10 ? '0' + seconds : seconds;
-	    minutes = minutes < 10 ? '0' + minutes : minutes;
-	    hours = hours < 10 ? '0' + hours : hours;
-	
-	    return hours + ':' + minutes + ':' + seconds;
-	  },
-	
-	  render: function render() {
-	    var timeRemaining = this.state.timeRemaining;
-	
-	    return React.createElement(
-	      'div',
-	      { className: 'timer' },
-	      React.createElement(
-	        'h3',
-	        null,
-	        this.getFormattedTime(timeRemaining),
-	        ' '
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = CountdownTimer;
 
 /***/ }
 /******/ ]);

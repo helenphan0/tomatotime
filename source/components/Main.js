@@ -14,6 +14,10 @@ var id;
 var showMovie;
 var seconds = 1;
 var tempState = {};
+var buttonDisabled = {
+	rating: false,
+	time: false,
+};
 const defaultPoster = './source/img/default_poster.jpg';
 
 // react router - top score, leaderboard
@@ -35,6 +39,7 @@ const Main = React.createClass({
   	},
   	getMovie: function() {
   		console.log('getting new movie');
+
   		this.setState({ ratingInput: false, timeInput: false });
 		var page = getRandomInt(1, 150);
 		var searchurl = 'https://api.themoviedb.org/3/movie/popular?api_key=342d326aba75ee271f3e2cb0fbfa3584&language=en-US&page=' + page;
@@ -87,7 +92,6 @@ const Main = React.createClass({
   			console.log('call new game here');
   		};
   		this.setState({ score: score += parseInt(seconds)});
-
   	},
   	disable: function(type) {
   		this.setState({ [type]: true });
@@ -99,12 +103,27 @@ const Main = React.createClass({
 		var initialTime = 10000;
 		return (
 			<div className='main'>
-				<h1>TomatoTime!</h1>
-				< Poster getMovie={this.getMovie}  url={this.state.posterUrl} title={this.state.posterTitle} />
+				<h1 className='title'>TomatoTime!</h1>
+				< Poster 
+					getMovie={this.getMovie} 
+					url={this.state.posterUrl} 
+					title={this.state.posterTitle} 
+				/>
 				<div className='right'>
 					< Score score={this.state.score} />
-					< CountdownTimer completeCallback={this.getMovie} tickCallback={this.getTimer} initialTimeRemaining={initialTime} />
-					< Guess disable={this.disable} addScore={this.addScore} rating={this.state.rating} time={this.state.time} ratingInput={this.state.ratingInput} timeInput={this.state.timeInput} />
+					< CountdownTimer 
+						completeCallback={this.getMovie} 
+						tickCallback={this.getTimer} 
+						initialTimeRemaining={initialTime} 
+					/>
+					< Guess 
+						disable={this.disable} 
+						addScore={this.addScore} 
+						rating={this.state.rating} 
+						time={this.state.time} 
+						ratingInput={this.state.ratingInput} 
+						timeInput={this.state.timeInput} 
+					/>
 				</div>
 			</div>
 		)

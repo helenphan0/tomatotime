@@ -4,7 +4,6 @@
 
 body {
 	width: 100%;
-
 }
 
 #root {
@@ -15,31 +14,44 @@ body {
 div {
 	border: 1px solid lightgrey;
 	margin: 10px;
-
 }
 
 .main {
-	width: 95%;
+	width: 90%;
 	height: 100%;
 	min-height: 750px;
 	padding: 20px;
+	padding-left: 3%;
 }
 
 h1, h2, h3, h4 {
 	text-align: center;
-	margin: 5px;
+	margin: 10px;
 }
 
 .right, .poster {
-	width: 45%;
 	height: 60%;
 	padding: 5px;
 	float: left;
 }
 
-.score, .guess, .timer {
+.right {
+	width: 40%;
+	height: 584px;
+}
+
+.poster {
+	width: 45%;
+}
+
+.score, .timer {
 	width: 95%;
 	display: inline-block;
+}
+
+h2.score-number {
+	font-size: 48px;
+	color: darkgrey;
 }
 
 .poster>img {
@@ -47,6 +59,13 @@ h1, h2, h3, h4 {
 	width: 100%;
 	display: block;
 	margin: 10px auto;
+}
+
+button {
+	display: block;
+	margin: auto;
+	width: 29%;
+	height: 35px;
 }
 
 .guess {
@@ -59,12 +78,25 @@ form {
 }
 
 input {
-	width: 70%;
-	height: 35px;
-	padding: 4px;
+	display: block;
+	margin: auto;
+	width: 99%;
+	height: 40px;
+	padding: 4px 10px;
 }
 
-button {
-	width: 29%;
-	height: 35px;
+input:nth-of-type(2) {
+	margin-top: 15px;
 }
+
+input:disabled {
+	font-weight: bolder;
+	color: green;
+	font-style: italic;
+}
+
+.guess button {
+	width: 99%;
+	cursor: pointer;
+}
+
