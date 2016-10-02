@@ -5,9 +5,8 @@ const Poster = React.createClass({
 	render(){
 		return (
 			<div className="poster">
-				<h2>{this.props.title}</h2>
+				<h3>{this.props.title}</h3>
 				<img src={this.props.url}/>
-				<button onClick={this.props.getMovie} type='button'>Play</button>
 			</div>
 		)
 	}

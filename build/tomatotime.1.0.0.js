@@ -23161,7 +23161,7 @@
 	
 	var id;
 	var showMovie;
-	var seconds = 1;
+	var seconds = 0;
 	var tempState = {};
 	var counter = 0;
 	var buttonDisabled = {
@@ -23169,10 +23169,18 @@
 		timeInput: false
 	};
 	var defaultPoster = './source/img/default_poster.jpg';
+	var introPoster = './source/img/intro_poster.png';
+	var endPoster = './source/img/end_poster.png';
 	
 	// react router - top score, leaderboard
 	// redux 
-	// stop at 10 movies
+	
+	// correct guess doesn't need to be exact..
+	// rating 1 - .1 75% 
+	// divide by half, 35%, etc
+	
+	// move start button underneath title
+	// fix restart button appearance (hide/unhide)
 	
 	var Main = _react2.default.createClass({
 		displayName: 'Main',
@@ -23180,10 +23188,11 @@
 		getInitialState: function getInitialState() {
 			return {
 				game: 0,
+				gameState: false,
 				ratingInput: false,
 				timeInput: false,
 				posterTitle: '',
-				posterUrl: '',
+				posterUrl: introPoster,
 				rating: '',
 				time: '',
 				score: 0
@@ -23199,7 +23208,7 @@
 			};
 			counter += 1;
 			this.setState({ game: counter, ratingInput: false, timeInput: false });
-			var page = getRandomInt(1, 100);
+			var page = getRandomInt(1, 80);
 			var searchurl = 'https://api.themoviedb.org/3/movie/popular?api_key=342d326aba75ee271f3e2cb0fbfa3584&language=en-US&page=' + page;
 			return (0, _isomorphicFetch2.default)(searchurl).then(function (response) {
 				return response.json();
@@ -23211,7 +23220,7 @@
 				if (oneMovie.poster_path == null) {
 					tempState.posterUrl = defaultPoster;
 				} else {
-					tempState.posterUrl = 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path;
+					tempState.posterUrl = 'https://image.tmdb.org/t/p/w300' + oneMovie.poster_path;
 				};
 				tempState.posterTitle = oneMovie.title;
 	
@@ -23228,7 +23237,7 @@
 	
 					var rating = showMovie.tomatoRating;
 					rating = rating === 'N/A' ? showMovie.imdbRating : rating;
-					rating = rating === 'N/A' || rating == null || !rating ? getRandomInt(1, 9) + '.' + getRandomInt(1, 10) : rating;
+					rating = rating === 'N/A' || rating == null || !rating ? getRandomInt(1, 8) + '.' + getRandomInt(1, 10) : rating;
 	
 					var time = showMovie.Runtime;
 					time = time === 'N/A' || time == null || !time ? getRandomInt(1, 160) + ' min' : time;
@@ -23237,17 +23246,20 @@
 					tempState.rating = rating;
 					tempState.time = time;
 					_this.setState(tempState);
-					//	this.setState({ rating: rating, time: time});
+	
 					return showMovie;
 				});
 			}).catch(function (error) {
 				console.error(error);
 			});
 		},
-		addScore: function addScore(add) {
+		addScore: function addScore(answer) {
 			var score = this.state.score;
-			console.log('SCORE IS: ' + seconds);
-			this.setState({ score: score += parseInt(seconds) });
+			console.log(answer);
+			var calcScore = parseInt(seconds) * answer.multiplier;
+			calcScore = Math.round(calcScore);
+			console.log('SCORE IS: ' + calcScore);
+			this.setState({ score: score += calcScore });
 		},
 		disable: function disable(type) {
 			buttonDisabled[type] = true, console.log(buttonDisabled);
@@ -23257,17 +23269,57 @@
 			seconds = timer;
 		},
 		endGame: function endGame() {
-			console.log('LE FIN');
+			seconds = 0;
+			this.setState({
+				posterTitle: '',
+				posterUrl: endPoster,
+				gameState: true,
+				rating: '',
+				time: ''
+			});
+		},
+		restart: function restart() {
+			tempState = {};
+			counter = 0;
+			this.setState({
+				game: 0,
+				gameState: false,
+				ratingInput: false,
+				timeInput: false,
+				posterTitle: '',
+				posterUrl: introPoster,
+				rating: '',
+				time: '',
+				score: 0
+			});
 		},
 		render: function render() {
-			var initialTime = 15000;
+			var initialTime = counter == 0 || this.state.gameState == true ? 0 : 20000;
+			var mainTitle = false;
+			if (this.state.game != 0 && this.state.gameState != true) {
+				mainTitle = true;
+			}
 			return _react2.default.createElement(
 				'div',
 				{ className: 'main' },
 				_react2.default.createElement(
-					'h1',
-					{ className: 'title' },
-					'TomatoTime!'
+					'div',
+					{ className: 'top' },
+					_react2.default.createElement(
+						'h1',
+						{ className: mainTitle ? 'title' : 'hidden' },
+						'TomatoTime!'
+					),
+					_react2.default.createElement(
+						'button',
+						{ onClick: this.getMovie, className: this.state.game != '0' ? 'hidden' : '', type: 'button' },
+						'Begin'
+					),
+					_react2.default.createElement(
+						'button',
+						{ onClick: this.restart, className: this.state.gameState ? '' : 'hidden', type: 'button' },
+						'Reset Game'
+					)
 				),
 				_react2.default.createElement(_Poster2.default, {
 					getMovie: counter == '10' ? this.endGame : this.getMovie,
@@ -23287,6 +23339,7 @@
 						game: this.state.game,
 						disable: this.disable,
 						addScore: this.addScore,
+						getMovie: counter == '10' ? this.endGame : this.getMovie,
 						rating: this.state.rating,
 						time: this.state.time,
 						ratingInput: this.state.ratingInput,
@@ -28862,16 +28915,11 @@
 				'div',
 				{ className: 'poster' },
 				_react2.default.createElement(
-					'h2',
+					'h3',
 					null,
 					this.props.title
 				),
-				_react2.default.createElement('img', { src: this.props.url }),
-				_react2.default.createElement(
-					'button',
-					{ onClick: this.props.getMovie, type: 'button' },
-					'Play'
-				)
+				_react2.default.createElement('img', { src: this.props.url })
 			);
 		}
 	});
@@ -28896,43 +28944,103 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	var tomatoText = {
+		tomatotext: '',
+		answer: 0,
+		multiplier: 0
+	};
+	
+	var timeText = {
+		timetext: '',
+		answer: 0,
+		multiplier: 0
+	};
+	
 	var Guess = _react2.default.createClass({
 		displayName: 'Guess',
 	
 		tomatoGuess: function tomatoGuess(e) {
 			e.preventDefault();
 			var tomato = this.refs.rating.value;
+			tomatoText.answer = this.props.rating;
 			console.log('tomato guess is: ' + tomato);
-			console.log('correct rating: ' + this.props.rating);
-			var correctRating = tomato === this.props.rating ? true : false;
-			if (correctRating) {
-				this.handleScore();
+			console.log('correct rating: ' + tomatoText.answer);
+	
+			var tomatoDiff = Math.abs(tomatoText.answer - tomato);
+			tomatoDiff = tomatoDiff.toFixed(1);
+			console.log('difference: ' + tomatoDiff);
+	
+			if (tomatoDiff == 0) {
+				tomatoText.tomatotext = 'Correct Answer!';
+				tomatoText.multiplier = 1;
+			} else if (tomatoDiff <= 0.5) {
+				tomatoText.tomatotext = 'Very close! Answer: ' + tomatoText.answer;
+				tomatoText.multiplier = 0.5;
+			} else if (tomatoDiff > 0.5 && tomatoDiff < 1) {
+				tomatoText.tomatotext = 'Almost! Correct Answer: ' + tomatoText.answer;
+				tomatoText.multiplier = 0.33;
+			} else if (tomatoDiff >= 1 && tomatoDiff < 2) {
+				tomatoText.tomatotext = 'Close enough. Answer: ' + tomatoText.answer;
+				tomatoText.multiplier = 0.15;
+			}
+			if (tomatoText.multiplier > 0) {
+				this.handleScore(tomatoText);
 				this.disableInput('ratingInput');
 			};
 			this.refs.guessForm.reset();
 		},
 		timeGuess: function timeGuess(e) {
 			e.preventDefault();
-			var duration = this.refs.time.value + ' min';
+			var duration = this.refs.time.value;
 			console.log('time guess is: ' + duration);
-			console.log('correct time: ' + this.props.time);
-			var correctTime = duration === this.props.time ? true : false;
-			if (correctTime) {
-				this.handleScore();
+	
+			var arr = this.props.time.split(' ');
+			var timeNumber = parseInt(arr[0]);
+			console.log('correct time is: ' + timeNumber);
+			timeText.answer = timeNumber;
+	
+			var timeDiff = Math.abs(timeText.answer - duration);
+			console.log('difference: ' + timeDiff);
+	
+			if (timeDiff == 0) {
+				timeText.timetext = 'Spot on, chap!';
+				timeText.multiplier = 1.2;
+			} else if (timeDiff <= 10) {
+				timeText.timetext = 'Close! Correct answer: ' + timeText.answer;
+				timeText.multiplier = 0.50;
+			} else if (timeDiff > 10 && timeDiff <= 20) {
+				timeText.timetext = 'Not bad. Correct Answer: ' + timeText.answer;
+				timeText.multiplier = 0.33;
+			} else if (timeDiff > 20 && timeDiff <= 25) {
+				timeText.timetext = 'Close enough. Answer: ' + timeText.answer;
+				timeText.multiplier = 0.15;
+			}
+	
+			if (timeText.multiplier > 0) {
+				this.handleScore(timeText);
 				this.disableInput('timeInput');
 			};
 			this.refs.guessForm.reset();
 		},
-		handleScore: function handleScore() {
-			this.props.addScore(1);
+		handleScore: function handleScore(obj) {
+			this.props.addScore(obj);
 		},
 		disableInput: function disableInput(type) {
 			this.props.disable(type);
+		},
+		componentDidUpdate: function componentDidUpdate() {
+			tomatoText.multiplier = 0;
+			timeText.multiplier = 0;
 		},
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
 				{ className: 'guess' },
+				_react2.default.createElement(
+					'button',
+					{ onClick: this.props.getMovie, className: 'next', type: 'button' },
+					'Next'
+				),
 				_react2.default.createElement(
 					'h4',
 					null,
@@ -28952,11 +29060,11 @@
 					'form',
 					{ ref: 'guessForm' },
 					_react2.default.createElement('input', {
-						type: 'text',
+						type: 'number',
 						ref: 'rating',
 						disabled: this.props.ratingInput,
 						onSubmit: this.tomatoGuess,
-						placeholder: this.props.ratingInput == true ? 'Correct answer!' : 'Guess 0.0 to 10.0'
+						placeholder: this.props.ratingInput == true ? tomatoText.tomatotext : 'Guess 0.0 to 10.0'
 					}),
 					_react2.default.createElement(
 						'button',
@@ -28964,10 +29072,10 @@
 						'Tomatoes'
 					),
 					_react2.default.createElement('input', {
-						type: 'text',
+						type: 'number',
 						ref: 'time',
 						disabled: this.props.timeInput,
-						placeholder: this.props.timeInput == true ? 'Correct answer!' : 'How many minutes?'
+						placeholder: this.props.timeInput == true ? timeText.timetext : 'How many minutes?'
 					}),
 					_react2.default.createElement(
 						'button',
@@ -29164,6 +29272,11 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'timer' },
+	      React.createElement(
+	        'h3',
+	        null,
+	        'Seconds Remaining'
+	      ),
 	      React.createElement(
 	        'h3',
 	        null,
