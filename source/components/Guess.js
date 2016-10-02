@@ -97,9 +97,8 @@ const Guess = React.createClass({
 	render(){
 		return (
 			<div className='guess'>
+				<h2>Round {this.props.game} of 10</h2>
 				<button onClick={this.props.getMovie} className='next' type='button'>Next</button>
-				<h4>Answers {this.props.rating} {this.props.time}</h4>
-				<h3>Round {this.props.game} of 10</h3>
 				<form ref='guessForm'>
 					<input 
 						type='number' 

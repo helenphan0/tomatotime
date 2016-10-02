@@ -29037,24 +29037,16 @@
 				'div',
 				{ className: 'guess' },
 				_react2.default.createElement(
-					'button',
-					{ onClick: this.props.getMovie, className: 'next', type: 'button' },
-					'Next'
-				),
-				_react2.default.createElement(
-					'h4',
-					null,
-					'Answers ',
-					this.props.rating,
-					' ',
-					this.props.time
-				),
-				_react2.default.createElement(
-					'h3',
+					'h2',
 					null,
 					'Round ',
 					this.props.game,
 					' of 10'
+				),
+				_react2.default.createElement(
+					'button',
+					{ onClick: this.props.getMovie, className: 'next', type: 'button' },
+					'Next'
 				),
 				_react2.default.createElement(
 					'form',
@@ -29278,7 +29270,7 @@
 	        'Seconds Remaining'
 	      ),
 	      React.createElement(
-	        'h3',
+	        'h2',
 	        null,
 	        this.getFormattedTime(timeRemaining),
 	        ' '

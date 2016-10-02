@@ -117,12 +117,13 @@ button.next {
 	width: 25%;
 	height: 30px;
 	padding: 3px;
+	margin: 10px auto;
 	border-radius: 5px;
 }
 
 form {
 	text-align: left;
-	padding: 15px;
+	padding: 0px 15px;
 }
 
 input {
@@ -158,4 +159,3 @@ form>button {
 	background-color: #EEC900;
 	box-shadow: inset 3px 3px 6px 0px rgba(50, 50, 50, 0.75);
 }
-
