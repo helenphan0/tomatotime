@@ -25,7 +25,7 @@ const Guess = React.createClass({
 		tomatoDiff = tomatoDiff.toFixed(1);
 		console.log('difference: ' + tomatoDiff);
 
-		if (tomatoDiff == 0) {
+		if (tomatoDiff == 0 && tomato != 0) {
 			tomatoText.tomatotext = 'Correct Answer!';
 			tomatoText.multiplier = 1;
 		}
@@ -70,7 +70,7 @@ const Guess = React.createClass({
 			timeText.multiplier = 0.50;
 		}
 		else if ( timeDiff > 10 && timeDiff <= 20) {
-			timeText.timetext = 'Not bad. Correct Answer: ' + timeText.answer;
+			timeText.timetext = 'Not bad. Answer: ' + timeText.answer;
 			timeText.multiplier = 0.33;
 		}
 		else if ( timeDiff > 20 && timeDiff <= 25) {

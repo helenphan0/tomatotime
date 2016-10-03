@@ -144,6 +144,7 @@ input:disabled {
 	font-weight: bolder;
 	color: green;
 	font-style: italic;
+	font-size: 14px;
 }
 
 form>button {
@@ -177,6 +178,7 @@ form>button {
 	width: 90%;
 	background-color: #FFD700;
 	user-select: none;
+	box-shadow: 2px 2px 5px rgba(50, 50, 50, 0.99);
 }
 
 .down {
@@ -187,7 +189,7 @@ form>button {
 	margin: 80% auto;
 }
 
-@media only screen and (min-width: 480px) and (max-width: 620px) {
+@media only screen and (min-width: 510px) and (max-width: 620px) {
 
 	h2, h3, h4, h2.score-number {
 		font-size: 18px;
@@ -195,7 +197,7 @@ form>button {
 
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 510px) and (orientation: portrait) {
 
 	.main {
 		width: 100%;

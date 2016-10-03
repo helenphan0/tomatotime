@@ -23164,10 +23164,6 @@
 	var seconds = 0;
 	var tempState = {};
 	var counter = 0;
-	var buttonDisabled = {
-		ratingInput: false,
-		timeInput: false
-	};
 	var defaultPoster = './source/img/default_poster.jpg';
 	var introPoster = './source/img/intro_poster.png';
 	var endPoster = './source/img/end_poster.png';
@@ -23193,8 +23189,8 @@
 				timeInput: false,
 				posterTitle: '',
 				posterUrl: introPoster,
-				rating: '',
-				time: '',
+				rating: 'begin game',
+				time: 'begin game',
 				score: 0
 			};
 		},
@@ -23202,10 +23198,6 @@
 			var _this = this;
 	
 			console.log('getting new movie');
-			buttonDisabled = {
-				ratingInput: false,
-				timeInput: false
-			};
 			counter += 1;
 			this.setState({ game: counter, ratingInput: false, timeInput: false });
 			var page = getRandomInt(1, 80);
@@ -23254,14 +23246,12 @@
 		},
 		addScore: function addScore(answer) {
 			var score = this.state.score;
-			console.log(answer);
 			var calcScore = parseInt(seconds) * answer.multiplier;
 			calcScore = Math.round(calcScore);
 			console.log('SCORE IS: ' + calcScore);
 			this.setState({ score: score += calcScore });
 		},
 		disable: function disable(type) {
-			buttonDisabled[type] = true, console.log(buttonDisabled);
 			this.setState(_defineProperty({}, type, true));
 		},
 		getTimer: function getTimer(timer) {
@@ -23273,8 +23263,8 @@
 				posterTitle: '',
 				posterUrl: endPoster,
 				gameState: true,
-				rating: 'NaN',
-				time: 'NaN'
+				rating: 'end game',
+				time: 'end game'
 			});
 		},
 		restart: function restart() {
@@ -23287,8 +23277,8 @@
 				timeInput: false,
 				posterTitle: '',
 				posterUrl: introPoster,
-				rating: '',
-				time: '',
+				rating: 'restart game',
+				time: 'restart game',
 				score: 0
 			});
 		},
@@ -28989,7 +28979,7 @@
 			tomatoDiff = tomatoDiff.toFixed(1);
 			console.log('difference: ' + tomatoDiff);
 	
-			if (tomatoDiff == 0) {
+			if (tomatoDiff == 0 && tomato != 0) {
 				tomatoText.tomatotext = 'Correct Answer!';
 				tomatoText.multiplier = 1;
 			} else if (tomatoDiff <= 0.5) {
@@ -29028,7 +29018,7 @@
 				timeText.timetext = 'Close! Correct answer: ' + timeText.answer;
 				timeText.multiplier = 0.50;
 			} else if (timeDiff > 10 && timeDiff <= 20) {
-				timeText.timetext = 'Not bad. Correct Answer: ' + timeText.answer;
+				timeText.timetext = 'Not bad. Answer: ' + timeText.answer;
 				timeText.multiplier = 0.33;
 			} else if (timeDiff > 20 && timeDiff <= 25) {
 				timeText.timetext = 'Close enough. Answer: ' + timeText.answer;

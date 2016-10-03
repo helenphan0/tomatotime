@@ -15,23 +15,12 @@ var showMovie;
 var seconds = 0;
 var tempState = {};
 var counter = 0;
-var buttonDisabled = {
-	ratingInput: false,
-	timeInput: false,
-};
 const defaultPoster = './source/img/default_poster.jpg';
 const introPoster = './source/img/intro_poster.png';
 const endPoster = './source/img/end_poster.png';
 
 // react router - top score, leaderboard
 // redux 
-
-// correct guess doesn't need to be exact..
-// rating 1 - .1 75% 
-// divide by half, 35%, etc
-
-// move start button underneath title
-// fix restart button appearance (hide/unhide)
 
 const Main = React.createClass({
 	getInitialState: function () {
@@ -42,17 +31,13 @@ const Main = React.createClass({
 	      timeInput: false,
 	      posterTitle: '',
 	      posterUrl: introPoster,
-	      rating: '',
-	      time: '',
+	      rating: 'begin game',
+	      time: 'begin game',
 	      score: 0
 	    };
   	},
   	getMovie: function() {
   		console.log('getting new movie');
-  		buttonDisabled	= {
-			ratingInput: false,
-	      	timeInput: false
-		};
 		counter += 1;
   		this.setState({ game: counter, ratingInput: false, timeInput: false });
 		var page = getRandomInt(1, 80);
@@ -104,15 +89,12 @@ const Main = React.createClass({
   	},
   	addScore: function(answer) {
   		var score = this.state.score;
-  		console.log(answer);
   		var calcScore = parseInt(seconds) * answer.multiplier;
   		calcScore = Math.round(calcScore);
   		console.log('SCORE IS: ' + calcScore);
   		this.setState({ score: score += calcScore });
   	},
   	disable: function(type) {
-  		buttonDisabled[type] = true,
-  		console.log(buttonDisabled);
   		this.setState({ [type]: true });
   	},
   	getTimer: function(timer) {
@@ -124,8 +106,8 @@ const Main = React.createClass({
   		 	posterTitle: '', 
   		 	posterUrl: endPoster, 
   		 	gameState: true,
-  		 	rating: 'NaN',
-		    time: 'NaN'
+  		 	rating: 'end game',
+		    time: 'end game'
   		});
   	},
   	restart: function() {
@@ -138,8 +120,8 @@ const Main = React.createClass({
 		    timeInput: false,
 		    posterTitle: '',
 		    posterUrl: introPoster,
-		    rating: '',
-		    time: '',
+		    rating: 'restart game',
+		    time: 'restart game',
 		    score: 0
   		});
   	},
