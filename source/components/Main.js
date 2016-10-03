@@ -95,7 +95,6 @@ const Main = React.createClass({
 						tempState.rating = rating;
 						tempState.time = time;
 						this.setState(tempState);
-
 		      			return showMovie;
 	      			});
 	      	}) 
@@ -125,8 +124,8 @@ const Main = React.createClass({
   		 	posterTitle: '', 
   		 	posterUrl: endPoster, 
   		 	gameState: true,
-  		 	rating: '',
-		    time: ''
+  		 	rating: 'NaN',
+		    time: 'NaN'
   		});
   	},
   	restart: function() {
@@ -144,6 +143,12 @@ const Main = React.createClass({
 		    score: 0
   		});
   	},
+  	scrollUp: function() {
+		window.scrollBy(0, -375); 
+  	},
+  	scrollDown: function() {
+		window.scrollBy(0, 375); 
+  	},
 	render() {
 		var initialTime = (counter == 0 || this.state.gameState == true ? 0 : 20000);
 		var mainTitle = false;
@@ -152,6 +157,14 @@ const Main = React.createClass({
 		}
 		return (
 			<div className='main'>
+				<div className='scrollbar'>
+					<div className='up' onClick={this.scrollUp} >
+						<img src='./source/img/up.png' />
+					</div>
+					<div className='down' onClick={this.scrollDown} >
+						<img src='./source/img/down.png' />
+					</div>
+				</div>
 				<div className='top'>
 					<h1 className={ mainTitle ? 'title' : 'hidden'}>TomatoTime!</h1>
 					<button onClick={this.getMovie} className={this.state.game != '0' ? 'hidden' : ''} type='button'>Begin</button>

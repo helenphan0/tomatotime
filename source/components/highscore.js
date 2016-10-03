@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 var leaderBoard = [
 	{ name: 'MH Van Hauten', score: 373567 },
-	{ name: 'Chester Copperpot', score: 167210 },
+	{ name: 'Chester Copperpot', score: 867210 },
 	{ name: 'Thomas Bundchen', score: 919802 },
 	{ name: 'NWBZPWNR', score: 9999999 },
 	{ name: '8yr old coding guru', score: 62810 },

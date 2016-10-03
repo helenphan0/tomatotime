@@ -23246,7 +23246,6 @@
 					tempState.rating = rating;
 					tempState.time = time;
 					_this.setState(tempState);
-	
 					return showMovie;
 				});
 			}).catch(function (error) {
@@ -23274,8 +23273,8 @@
 				posterTitle: '',
 				posterUrl: endPoster,
 				gameState: true,
-				rating: '',
-				time: ''
+				rating: 'NaN',
+				time: 'NaN'
 			});
 		},
 		restart: function restart() {
@@ -23293,6 +23292,12 @@
 				score: 0
 			});
 		},
+		scrollUp: function scrollUp() {
+			window.scrollBy(0, -375);
+		},
+		scrollDown: function scrollDown() {
+			window.scrollBy(0, 375);
+		},
 		render: function render() {
 			var initialTime = counter == 0 || this.state.gameState == true ? 0 : 20000;
 			var mainTitle = false;
@@ -23302,6 +23307,20 @@
 			return _react2.default.createElement(
 				'div',
 				{ className: 'main' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'scrollbar' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'up', onClick: this.scrollUp },
+						_react2.default.createElement('img', { src: './source/img/up.png' })
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'down', onClick: this.scrollDown },
+						_react2.default.createElement('img', { src: './source/img/down.png' })
+					)
+				),
 				_react2.default.createElement(
 					'div',
 					{ className: 'top' },
