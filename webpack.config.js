@@ -1,7 +1,5 @@
 var path = require('path');
-
 var webpack = require('webpack');
-
 var packageData = require('./package.json');
 
 var filename = [packageData.name, packageData.version, 'js'];
@@ -11,6 +9,11 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: filename.join('.'),
+    },
+    devServer: {
+      inline: true,
+      contentBase: './',
+      port: 8080
     },
     devtool: 'source-map',
     module: {

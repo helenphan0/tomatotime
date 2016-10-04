@@ -12,9 +12,25 @@ body {
 	display: none;
 }
 
+.grey-out {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.5);
+	z-index: 900;
+}
+
+.alert {
+	position: absolute;
+	width: 50%;
+	top: 13%;
+	left: 25%;
+}
+
 #root {
 	min-height: 750px;
-
 }
 
 div {
@@ -33,10 +49,10 @@ div {
 
 .main {
 	width: 90%;
-/*	height: 85%; */
 	min-height: 700px;
-	padding: 5px 20px;
+	padding: 5px 10px;
 	padding-left: 3%;
+	margin: auto;
 	margin-top: 2%;
 	background-color: #CD2626;
 }
@@ -54,7 +70,7 @@ h1, h2, h3, h4 {
 
 .right, .poster {
 	height: 60%;
-	height: 538px;
+	height: 543px;
 	padding: 5px;
 	float: left;
 	background-color: white;
@@ -66,7 +82,7 @@ h1, h2, h3, h4 {
 }
 
 .poster {
-	width: 43%;
+	width: 45%;
 }
 
 .poster>h3 {
@@ -88,7 +104,7 @@ h2.score-number {
 
 .poster>img {
 	max-width: 320px;
-	width: 90%;
+	width: 94%;
 	display: block;
 	margin: 10px auto;
 }
@@ -168,7 +184,7 @@ form>button {
 	height: 150px;
 	width: 40px;
 	right: 0px;
-	top: 38%;
+	top: 40%;
 	padding: 4px;
 }
 
@@ -197,18 +213,61 @@ form>button {
 
 }
 
-@media only screen and (max-width: 510px) and (orientation: portrait) {
+@media only screen and (max-width: 510px) {
 
 	.main {
 		width: 100%;
 		height: 1075px;
-		padding-left: 15px;
+		padding-left: 10px;
 		margin: 0;
 		text-align: center;
 	}
 
 	.poster, .right {
-		width: 90%;
+		width: 95%;
+		height: 510px;
+		padding-top: 15px;
+	}
+
+	.right {
+		height: 415px;
+		margin-top: 10px;
+	}
+
+	h2, h3, h4 {
+		margin: 3px auto;
+	}
+
+	h2.score-number {
+		font-size: 25px;
+	}
+
+	.scrollbar {
+		display: block;
+	}
+}
+
+@media only screen and (orientation: portrait) {
+
+	.top {
+		width: 75%;
+		margin: auto;
+	}
+
+	.main {
+		position: absolute;
+		top: 20px;
+		width: 100%;
+		height: 1100px;
+		padding-left: 10px;
+		margin: 0;
+		text-align: center;
+	}
+
+	.poster, .right {
+		float: none;
+		margin: auto;
+		width: 85%;
 	}
 
 	.right {
@@ -224,9 +283,12 @@ form>button {
 		font-size: 25px;
 	}
 
+	form {
+		width: 65%;
+		margin: auto;
+	}
+
 	.scrollbar {
 		display: block;
 	}
-
-
 }

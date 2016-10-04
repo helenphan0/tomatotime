@@ -1,16 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router';
 import Poster from './Poster';
 import Guess from './Guess';
 import Score from './Score';
 import CountdownTimer from './CountdownTimer';
+import Alert from './Alert';
 import fetch from 'isomorphic-fetch';
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
  };
 
-var id;
 var showMovie;
 var seconds = 0;
 var tempState = {};
@@ -18,9 +17,6 @@ var counter = 0;
 const defaultPoster = './source/img/default_poster.jpg';
 const introPoster = './source/img/intro_poster.png';
 const endPoster = './source/img/end_poster.png';
-
-// react router - top score, leaderboard
-// redux 
 
 const Main = React.createClass({
 	getInitialState: function () {
@@ -139,6 +135,7 @@ const Main = React.createClass({
 		}
 		return (
 			<div className='main'>
+				<Alert />
 				<div className='scrollbar'>
 					<div className='up' onClick={this.scrollUp} >
 						<img src='./source/img/up.png' />
@@ -152,19 +149,19 @@ const Main = React.createClass({
 					<button onClick={this.getMovie} className={this.state.game != '0' ? 'hidden' : ''} type='button'>Begin</button>
 					<button onClick={this.restart} className={this.state.gameState ? '' : 'hidden'} type='button'>Reset Game</button>
 				</div>
-				< Poster 
+				<Poster 
 					getMovie={counter == '10' ? this.endGame : this.getMovie} 
 					url={this.state.posterUrl} 
 					title={this.state.posterTitle} 
 				/>
 				<div className='right'>
-					< Score score={this.state.score} />
-					< CountdownTimer 
+					<Score score={this.state.score} />
+					<CountdownTimer 
 						completeCallback={counter == '10' ? this.endGame : this.getMovie} 
 						tickCallback={this.getTimer} 
 						initialTimeRemaining={initialTime} 
 					/>
-					< Guess 
+					<Guess 
 						game={this.state.game} 
 						disable={this.disable} 
 						addScore={this.addScore}

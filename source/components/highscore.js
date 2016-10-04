@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router';
 
 var leaderBoard = [
 	{ name: 'MH Van Hauten', score: 373567 },
@@ -35,14 +34,12 @@ const Highscore = React.createClass({
 	},
 	render() {
 		return (
-			<div className='grey-out'>
-				<div className='window'>
-					<form>
-						<input ref='playerName' type='text' placeholder='Enter your name' />
-						<button type='button'>Submit</button>
-					<form>
-				</div>
-			<div>
+			<div className='window'>
+				<form>
+					<input ref='playerName' type='text' placeholder='Enter your name' />
+					<button type='button'>Submit</button>
+				</form>
+			</div>
 		)
 	}
 });
