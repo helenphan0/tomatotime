@@ -17,12 +17,9 @@ const Guess = React.createClass({
 		e.preventDefault();
 		var tomato = this.refs.rating.value;
 		tomatoText.answer = this.props.rating;
-		console.log('tomato guess is: ' + tomato);
-		console.log('correct rating: ' + tomatoText.answer);
 
 		var tomatoDiff = Math.abs(tomatoText.answer - tomato);
 		tomatoDiff = tomatoDiff.toFixed(1);
-		console.log('difference: ' + tomatoDiff);
 
 		if (tomatoDiff == 0 && tomato != 0) {
 			tomatoText.tomatotext = 'Correct Answer!';
@@ -30,7 +27,7 @@ const Guess = React.createClass({
 		}
 		else if ( tomatoDiff <= 0.5) {
 			tomatoText.tomatotext = 'Very close! Answer: ' + tomatoText.answer;
-			tomatoText.multiplier = 0.5;
+			tomatoText.multiplier = 0.40;
 		}
 		else if ( tomatoDiff > 0.5 && tomatoDiff < 1) {
 			tomatoText.tomatotext = 'Almost! Correct Answer: ' + tomatoText.answer;
@@ -49,16 +46,12 @@ const Guess = React.createClass({
 	timeGuess: function(e){
 		e.preventDefault();
 		var duration = this.refs.time.value;
-		console.log('time guess is: ' + duration);
 
 		var arr = this.props.time.split(' ');
 		var timeNumber = parseInt(arr[0]);
-		console.log('correct time is: ' + timeNumber);
 		timeText.answer = timeNumber;
 
 		var timeDiff = Math.abs(timeText.answer - duration);
-		console.log('difference: ' + timeDiff);
-
 
 		if ( timeDiff == 0 ) {
 			timeText.timetext = 'Spot on, chap!';
@@ -66,15 +59,15 @@ const Guess = React.createClass({
 		}
 		else if ( timeDiff <= 10 ) {
 			timeText.timetext = 'Close! Correct answer: ' + timeText.answer;
-			timeText.multiplier = 0.50;
+			timeText.multiplier = 0.45;
 		}
 		else if ( timeDiff > 10 && timeDiff <= 20) {
 			timeText.timetext = 'Not bad. Answer: ' + timeText.answer;
-			timeText.multiplier = 0.33;
+			timeText.multiplier = 0.25;
 		}
 		else if ( timeDiff > 20 && timeDiff <= 25) {
 			timeText.timetext = 'Close enough. Answer: ' + timeText.answer;
-			timeText.multiplier = 0.15;
+			timeText.multiplier = 0.10;
 		}
 
 		if (timeText.multiplier > 0) {

@@ -52,7 +52,7 @@
 	
 	var _reactDom = __webpack_require__(34);
 	
-	var _Main = __webpack_require__(258);
+	var _Main = __webpack_require__(172);
 	
 	var _Main2 = _interopRequireDefault(_Main);
 	
@@ -21432,93 +21432,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 172 */,
-/* 173 */,
-/* 174 */,
-/* 175 */,
-/* 176 */,
-/* 177 */,
-/* 178 */,
-/* 179 */,
-/* 180 */,
-/* 181 */,
-/* 182 */,
-/* 183 */,
-/* 184 */,
-/* 185 */,
-/* 186 */,
-/* 187 */,
-/* 188 */,
-/* 189 */,
-/* 190 */,
-/* 191 */,
-/* 192 */,
-/* 193 */,
-/* 194 */,
-/* 195 */,
-/* 196 */,
-/* 197 */,
-/* 198 */,
-/* 199 */,
-/* 200 */,
-/* 201 */,
-/* 202 */,
-/* 203 */,
-/* 204 */,
-/* 205 */,
-/* 206 */,
-/* 207 */,
-/* 208 */,
-/* 209 */,
-/* 210 */,
-/* 211 */,
-/* 212 */,
-/* 213 */,
-/* 214 */,
-/* 215 */,
-/* 216 */,
-/* 217 */,
-/* 218 */,
-/* 219 */,
-/* 220 */,
-/* 221 */,
-/* 222 */,
-/* 223 */,
-/* 224 */,
-/* 225 */,
-/* 226 */,
-/* 227 */,
-/* 228 */,
-/* 229 */,
-/* 230 */,
-/* 231 */,
-/* 232 */,
-/* 233 */,
-/* 234 */,
-/* 235 */,
-/* 236 */,
-/* 237 */,
-/* 238 */,
-/* 239 */,
-/* 240 */,
-/* 241 */,
-/* 242 */,
-/* 243 */,
-/* 244 */,
-/* 245 */,
-/* 246 */,
-/* 247 */,
-/* 248 */,
-/* 249 */,
-/* 250 */,
-/* 251 */,
-/* 252 */,
-/* 253 */,
-/* 254 */,
-/* 255 */,
-/* 256 */,
-/* 257 */,
-/* 258 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21531,27 +21445,27 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Poster = __webpack_require__(259);
+	var _Poster = __webpack_require__(173);
 	
 	var _Poster2 = _interopRequireDefault(_Poster);
 	
-	var _Guess = __webpack_require__(260);
+	var _Guess = __webpack_require__(174);
 	
 	var _Guess2 = _interopRequireDefault(_Guess);
 	
-	var _Score = __webpack_require__(261);
+	var _Score = __webpack_require__(175);
 	
 	var _Score2 = _interopRequireDefault(_Score);
 	
-	var _CountdownTimer = __webpack_require__(262);
+	var _CountdownTimer = __webpack_require__(176);
 	
 	var _CountdownTimer2 = _interopRequireDefault(_CountdownTimer);
 	
-	var _Alert = __webpack_require__(266);
+	var _Alert = __webpack_require__(177);
 	
 	var _Alert2 = _interopRequireDefault(_Alert);
 	
-	var _isomorphicFetch = __webpack_require__(263);
+	var _isomorphicFetch = __webpack_require__(178);
 	
 	var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
 	
@@ -21599,7 +21513,6 @@
 				return response.json();
 			}).then(function (responseJson) {
 				var oneMovie = responseJson.results[getRandomInt(0, responseJson.results.length)];
-				console.log(oneMovie);
 	
 				// set temp state here
 				if (oneMovie.poster_path == null) {
@@ -21608,17 +21521,12 @@
 					tempState.posterUrl = 'https://image.tmdb.org/t/p/w300' + oneMovie.poster_path;
 				};
 				tempState.posterTitle = oneMovie.title;
-	
-				//	this.setState({ posterUrl: 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path, posterTitle: oneMovie.title});
 			}).then(function (movieDetail) {
-	
-				console.log(tempState.posterTitle);
 				var detailUrl = 'https://www.omdbapi.com/?t=' + tempState.posterTitle + '&plot=full&type=movie&tomatoes=true&r=json';
 				(0, _isomorphicFetch2.default)(detailUrl).then(function (resp) {
 					return resp.json();
 				}).then(function (respJson) {
 					showMovie = respJson;
-					console.log(showMovie);
 	
 					var rating = showMovie.tomatoRating;
 					rating = rating === 'N/A' ? showMovie.imdbRating : rating;
@@ -21641,7 +21549,7 @@
 			var score = this.state.score;
 			var calcScore = parseInt(seconds) * answer.multiplier;
 			calcScore = Math.round(calcScore);
-			console.log('SCORE IS: ' + calcScore);
+			console.log('Points earned: ' + calcScore);
 			this.setState({ score: score += calcScore });
 		},
 		disable: function disable(type) {
@@ -21756,7 +21664,7 @@
 	exports.default = Main;
 
 /***/ },
-/* 259 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21790,7 +21698,7 @@
 	exports.default = Poster;
 
 /***/ },
-/* 260 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21824,19 +21732,16 @@
 			e.preventDefault();
 			var tomato = this.refs.rating.value;
 			tomatoText.answer = this.props.rating;
-			console.log('tomato guess is: ' + tomato);
-			console.log('correct rating: ' + tomatoText.answer);
 	
 			var tomatoDiff = Math.abs(tomatoText.answer - tomato);
 			tomatoDiff = tomatoDiff.toFixed(1);
-			console.log('difference: ' + tomatoDiff);
 	
 			if (tomatoDiff == 0 && tomato != 0) {
 				tomatoText.tomatotext = 'Correct Answer!';
 				tomatoText.multiplier = 1;
 			} else if (tomatoDiff <= 0.5) {
 				tomatoText.tomatotext = 'Very close! Answer: ' + tomatoText.answer;
-				tomatoText.multiplier = 0.5;
+				tomatoText.multiplier = 0.40;
 			} else if (tomatoDiff > 0.5 && tomatoDiff < 1) {
 				tomatoText.tomatotext = 'Almost! Correct Answer: ' + tomatoText.answer;
 				tomatoText.multiplier = 0.33;
@@ -21853,28 +21758,25 @@
 		timeGuess: function timeGuess(e) {
 			e.preventDefault();
 			var duration = this.refs.time.value;
-			console.log('time guess is: ' + duration);
 	
 			var arr = this.props.time.split(' ');
 			var timeNumber = parseInt(arr[0]);
-			console.log('correct time is: ' + timeNumber);
 			timeText.answer = timeNumber;
 	
 			var timeDiff = Math.abs(timeText.answer - duration);
-			console.log('difference: ' + timeDiff);
 	
 			if (timeDiff == 0) {
 				timeText.timetext = 'Spot on, chap!';
 				timeText.multiplier = 1.2;
 			} else if (timeDiff <= 10) {
 				timeText.timetext = 'Close! Correct answer: ' + timeText.answer;
-				timeText.multiplier = 0.50;
+				timeText.multiplier = 0.45;
 			} else if (timeDiff > 10 && timeDiff <= 20) {
 				timeText.timetext = 'Not bad. Answer: ' + timeText.answer;
-				timeText.multiplier = 0.33;
+				timeText.multiplier = 0.25;
 			} else if (timeDiff > 20 && timeDiff <= 25) {
 				timeText.timetext = 'Close enough. Answer: ' + timeText.answer;
-				timeText.multiplier = 0.15;
+				timeText.multiplier = 0.10;
 			}
 	
 			if (timeText.multiplier > 0) {
@@ -21943,7 +21845,7 @@
 	exports.default = Guess;
 
 /***/ },
-/* 261 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21981,7 +21883,7 @@
 	exports.default = Score;
 
 /***/ },
-/* 262 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22141,19 +22043,60 @@
 	module.exports = CountdownTimer;
 
 /***/ },
-/* 263 */
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var boxStatus;
+	
+	var Alert = _react2.default.createClass({
+		displayName: 'Alert',
+	
+		getInitialState: function getInitialState() {
+			return {
+				boxStatus: true
+			};
+		},
+		boxClick: function boxClick() {
+			boxStatus = false;
+			this.setState({ boxStatus: boxStatus });
+		},
+		render: function render() {
+			return _react2.default.createElement(
+				'div',
+				{ onClick: this.boxClick, className: this.state.boxStatus ? 'grey-out' : 'hidden' },
+				_react2.default.createElement('img', { className: 'alert', src: './source/img/tv-alert.png' })
+			);
+		}
+	});
+	
+	exports.default = Alert;
+
+/***/ },
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// the whatwg-fetch polyfill installs the fetch() function
 	// on the global object (window or self)
 	//
 	// Return that as the export for use in Webpack, Browserify etc.
-	__webpack_require__(264);
+	__webpack_require__(179);
 	module.exports = self.fetch.bind(self);
 
 
 /***/ },
-/* 264 */
+/* 179 */
 /***/ function(module, exports) {
 
 	(function(self) {
@@ -22590,48 +22533,6 @@
 	  self.fetch.polyfill = true
 	})(typeof self !== 'undefined' ? self : this);
 
-
-/***/ },
-/* 265 */,
-/* 266 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var boxStatus;
-	
-	var Alert = _react2.default.createClass({
-		displayName: 'Alert',
-	
-		getInitialState: function getInitialState() {
-			return {
-				boxStatus: true
-			};
-		},
-		boxClick: function boxClick() {
-			boxStatus = false;
-			this.setState({ boxStatus: boxStatus });
-		},
-		render: function render() {
-			return _react2.default.createElement(
-				'div',
-				{ onClick: this.boxClick, className: this.state.boxStatus ? 'grey-out' : 'hidden' },
-				_react2.default.createElement('img', { className: 'alert', src: './source/img/tv-alert.png' })
-			);
-		}
-	});
-	
-	exports.default = Alert;
 
 /***/ }
 /******/ ]);

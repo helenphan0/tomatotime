@@ -42,7 +42,6 @@ const Main = React.createClass({
 	      	.then((response) => response.json())
 	      	.then((responseJson) => {
 		     	var oneMovie = responseJson.results[getRandomInt(0, responseJson.results.length)];
-		     	console.log(oneMovie);
 
 		     	// set temp state here
 		     	if (oneMovie.poster_path == null) {
@@ -53,17 +52,13 @@ const Main = React.createClass({
 		     	};
 		     	tempState.posterTitle = oneMovie.title;
 
-		     //	this.setState({ posterUrl: 'https://image.tmdb.org/t/p/w320' + oneMovie.poster_path, posterTitle: oneMovie.title});
 	      	})
 	      	.then((movieDetail) => {
-
-		    	console.log(tempState.posterTitle);
 		      	let detailUrl =  'https://www.omdbapi.com/?t=' + tempState.posterTitle + '&plot=full&type=movie&tomatoes=true&r=json';
 		      	fetch(detailUrl)
 		      		.then((resp) => resp.json())
 		      		.then((respJson) => {
 		      			showMovie = respJson;
-		      			console.log(showMovie);
 
 		      			var rating = showMovie.tomatoRating;
 		      			rating = (rating === 'N/A' ? showMovie.imdbRating : rating);
@@ -87,7 +82,7 @@ const Main = React.createClass({
   		var score = this.state.score;
   		var calcScore = parseInt(seconds) * answer.multiplier;
   		calcScore = Math.round(calcScore);
-  		console.log('SCORE IS: ' + calcScore);
+  		console.log('Points earned: ' + calcScore);
   		this.setState({ score: score += calcScore });
   	},
   	disable: function(type) {
