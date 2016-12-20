@@ -21868,11 +21868,6 @@
 				{ className: 'score' },
 				_react2.default.createElement(
 					'h2',
-					null,
-					'Your Score'
-				),
-				_react2.default.createElement(
-					'h2',
 					{ className: 'score-number' },
 					this.props.score
 				)
