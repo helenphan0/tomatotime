@@ -39,7 +39,7 @@ div {
 }
 
 .top {
-	width: 90%;
+	width: 85%;
 	height: 75px;
 	padding: 10px;
 }
@@ -65,14 +65,13 @@ h1, h2, h3, h4 {
 
 .title {
 	margin: 10px;
-	color: #FFD700;
+	color: white;
 	text-shadow: 4px 4px 5px rgba(0, 0, 0, 0.69);
 }
 
 .right, .poster {
-	border: 1px solid whitesmoke;
-	height: 60%;
-	height: 543px;
+	height: 550px;
+	margin: 0px;
 	padding: 5px;
 	float: left;
 	background-color: white;
@@ -80,6 +79,7 @@ h1, h2, h3, h4 {
 
 .right {
 	width: 44%;
+	padding: 15px 0px;
 }
 
 .poster {
